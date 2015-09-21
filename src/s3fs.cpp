@@ -2643,6 +2643,8 @@ static int s3fs_release(const char *path, struct fuse_file_info *fi) {
   if(foreground) 
     cout << "s3fs_release[path=" << path << "][fd=" << fi->fh << "]" << endl;
 
+  s3fs_flush(path, fi);
+
   if(close(fi->fh) == -1)
     YIKES(-errno);
 
