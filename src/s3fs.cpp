@@ -2640,10 +2640,13 @@ static int s3fs_flush(const char *path, struct fuse_file_info *fi) {
 }
 
 static int s3fs_release(const char *path, struct fuse_file_info *fi) {
+  struct stat st;
+
   if(foreground) 
     cout << "s3fs_release[path=" << path << "][fd=" << fi->fh << "]" << endl;
 
-  s3fs_flush(path, fi);
+  if(fstat(fi->fh, &st) == 0 && st.st_size != 0)
+    s3fs_flush(path, fi);
 
   if(close(fi->fh) == -1)
     YIKES(-errno);
